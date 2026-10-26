@@ -509,13 +509,22 @@ impl ServerManager {
             .base_url()
             .await
             .ok_or_else(|| "The local model is not ready yet.".to_string())?;
-        let response = self
-            .client
-            .post(format!("{base}/v1/chat/completions"))
-            .json(&body)
-            .send()
-            .await
-            .map_err(|e| friendly_network_error(&e))?;
+        let response = tokio::select! {
+            _ = cancel.cancelled() => {
+                return Ok(StreamOutcome {
+                    content: String::new(),
+                    timing: ChunkTiming::default(),
+                    cancelled: true,
+                });
+            }
+            res = self
+                .client
+                .post(format!("{base}/v1/chat/completions"))
+                .json(&body)
+                .send()
+                .await
+        }
+        .map_err(|e| friendly_network_error(&e))?;
         let status = response.status();
         if !status.is_success() {
             let detail = response.text().await.unwrap_or_default();
