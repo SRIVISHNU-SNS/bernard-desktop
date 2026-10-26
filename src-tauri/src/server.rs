@@ -127,7 +127,7 @@ impl ServerManager {
         self.shutting_down.store(true, Ordering::SeqCst);
         self.stop.cancel();
         self.restart.notify_waiters();
-        if let Ok(state) = self.app.try_state::<AppState>() {
+        if let Some(state) = self.app.try_state::<AppState>() {
             let manager = state.server.clone();
             tauri::async_runtime::spawn(async move {
                 manager.kill_child().await;
@@ -317,8 +317,9 @@ impl ServerManager {
 
         #[cfg(windows)]
         {
-            use std::os::windows::io::AsRawHandle;
-            self.attach_to_job(child.as_raw_handle()).await;
+            if let Some(raw) = child.raw_handle() {
+                self.attach_to_job(raw).await;
+            }
         }
 
         if let Some(stdout) = child.stdout.take() {
@@ -725,6 +726,9 @@ pub fn set_capture_exclusion(window: &tauri::WebviewWindow) {
         SetWindowDisplayAffinity, WDA_EXCLUDEFROMCAPTURE,
     };
     if let Ok(handle) = window.hwnd() {
+        // Tauri bundles a newer `windows` crate than our direct dependency, so
+        // rebuild the handle from its raw pointer instead of mixing crate types.
+        let handle = HWND(handle.0);
         unsafe {
             let _ = SetWindowDisplayAffinity(handle, WDA_EXCLUDEFROMCAPTURE);
         }

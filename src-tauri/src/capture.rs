@@ -30,7 +30,7 @@ pub struct CaptureBatch {
     pub elapsed_ms: f64,
 }
 
-#[derive(Debug, serde::Serialize, serde::Deserialize)]
+#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct OverlayPayload {
     pub label: String,

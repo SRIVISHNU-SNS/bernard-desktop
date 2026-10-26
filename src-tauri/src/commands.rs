@@ -688,9 +688,9 @@ pub fn open_external(url: String) -> Result<(), String> {
 
     #[cfg(windows)]
     {
-        use windows::core::PCWSTR;
-        use windows::Win32::UI::Shell::ShellExecuteW;
-        use windows::Win32::UI::WindowsAndMessaging::SW_SHOWNORMAL;
+        use ::windows::core::PCWSTR;
+        use ::windows::Win32::UI::Shell::ShellExecuteW;
+        use ::windows::Win32::UI::WindowsAndMessaging::SW_SHOWNORMAL;
 
         let wide: Vec<u16> = target.encode_utf16().chain(std::iter::once(0)).collect();
         let result = unsafe {
@@ -1054,7 +1054,7 @@ fn os_description() -> String {
 
 #[cfg(windows)]
 fn memory_total() -> u64 {
-    use windows::Win32::System::SystemInformation::{GlobalMemoryStatusEx, MEMORYSTATUSEX};
+    use ::windows::Win32::System::SystemInformation::{GlobalMemoryStatusEx, MEMORYSTATUSEX};
     let mut status = MEMORYSTATUSEX {
         dwLength: std::mem::size_of::<MEMORYSTATUSEX>() as u32,
         ..Default::default()
@@ -1073,10 +1073,10 @@ fn memory_total() -> u64 {
 
 #[cfg(windows)]
 fn process_memory(_app: &AppHandle) -> u64 {
-    use windows::Win32::System::ProcessStatus::{
+    use ::windows::Win32::System::ProcessStatus::{
         GetProcessMemoryInfo, PROCESS_MEMORY_COUNTERS,
     };
-    use windows::Win32::System::Threading::GetCurrentProcess;
+    use ::windows::Win32::System::Threading::GetCurrentProcess;
     let mut counters = PROCESS_MEMORY_COUNTERS {
         cb: std::mem::size_of::<PROCESS_MEMORY_COUNTERS>() as u32,
         ..Default::default()
@@ -1104,8 +1104,8 @@ fn process_memory(_app: &AppHandle) -> u64 {
 #[cfg(windows)]
 fn process_cpu_percent() -> f64 {
     use std::sync::Mutex;
-    use windows::Win32::Foundation::FILETIME;
-    use windows::Win32::System::Threading::{GetCurrentProcess, GetProcessTimes};
+    use ::windows::Win32::Foundation::FILETIME;
+    use ::windows::Win32::System::Threading::{GetCurrentProcess, GetProcessTimes};
     static SAMPLE: Mutex<Option<(Instant, u64)>> = Mutex::new(None);
     let mut creation = FILETIME::default();
     let mut exit = FILETIME::default();

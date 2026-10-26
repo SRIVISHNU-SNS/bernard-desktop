@@ -39,8 +39,8 @@ jobs:
         shell: pwsh
         run: ./scripts/fetch-sidecar.ps1
 
-      - name: Type-check frontend
-        run: npx tsc --noEmit
+      - name: Build frontend
+        run: npm run build
 
       - name: Cargo check
         run: cargo check --manifest-path src-tauri/Cargo.toml --locked
