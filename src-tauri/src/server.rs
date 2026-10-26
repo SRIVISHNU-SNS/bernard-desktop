@@ -522,7 +522,7 @@ impl ServerManager {
                 .post(format!("{base}/v1/chat/completions"))
                 .json(&body)
                 .send()
-                .await
+                .await => res
         }
         .map_err(|e| friendly_network_error(&e))?;
         let status = response.status();
