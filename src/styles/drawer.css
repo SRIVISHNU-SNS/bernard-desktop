@@ -1,0 +1,427 @@
+.drawer-layer {
+  position: absolute;
+  inset: 0;
+  z-index: 130;
+  display: flex;
+  border-radius: inherit;
+  overflow: hidden;
+}
+
+.drawer-backdrop {
+  position: absolute;
+  inset: 0;
+  border: 0;
+  border-radius: inherit;
+  background: rgba(18, 15, 11, 0.34);
+  backdrop-filter: blur(1.5px);
+  animation: drawer-veil-in 160ms ease;
+}
+
+@keyframes drawer-veil-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.drawer {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  width: min(312px, calc(100% - 36px));
+  height: 100%;
+  min-height: 0;
+  background:
+    radial-gradient(
+      100% 40% at 0% 0%,
+      color-mix(in srgb, var(--accent) 7%, transparent),
+      transparent 70%
+    ),
+    linear-gradient(174deg, var(--paper-raised), var(--paper) 78%);
+  border-right: 1px solid var(--line-strong);
+  box-shadow: 24px 0 50px -32px rgba(15, 12, 8, 0.7);
+  animation: drawer-slide-in 190ms cubic-bezier(0.22, 0.9, 0.3, 1);
+}
+
+@keyframes drawer-slide-in {
+  from {
+    opacity: 0.4;
+    transform: translateX(-12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.drawer-head {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 9px 8px 13px;
+  border-bottom: 1px solid color-mix(in srgb, var(--line) 72%, transparent);
+}
+
+.drawer-heading {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex: 1;
+  min-width: 0;
+  font-size: 12.2px;
+  font-weight: 630;
+  letter-spacing: -0.012em;
+  color: var(--ink);
+}
+
+.drawer-heading svg {
+  flex: none;
+  color: var(--accent);
+}
+
+.drawer-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 17px;
+  height: 16px;
+  padding: 0 4px;
+  border-radius: var(--radius-pill);
+  background: var(--paper-sunken);
+  border: 1px solid var(--line);
+  color: var(--faint);
+  font-family: var(--font-mono);
+  font-size: 8.4px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.drawer-new {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  flex: none;
+  height: 33px;
+  margin: 8px 10px 0;
+  padding: 0 9px;
+  border-radius: 9px;
+  border: 1px dashed var(--line-strong);
+  background: color-mix(in srgb, var(--paper-raised) 62%, transparent);
+  color: var(--ink-soft);
+  font-size: 10.8px;
+  font-weight: 570;
+  transition:
+    border-color 140ms ease,
+    background-color 140ms ease,
+    color 140ms ease;
+}
+
+.drawer-new svg {
+  flex: none;
+  color: var(--accent);
+}
+
+.drawer-new:hover {
+  border-color: color-mix(in srgb, var(--accent) 52%, var(--line-strong));
+  background: var(--paper-raised);
+  color: var(--ink);
+}
+
+.drawer-new kbd {
+  margin-left: auto;
+}
+
+kbd {
+  display: inline-flex;
+  align-items: center;
+  padding: 1px 4px;
+  border: 1px solid var(--line);
+  border-bottom-width: 2px;
+  border-radius: 4px;
+  background: var(--paper-sunken);
+  color: var(--faint);
+  font-family: var(--font-mono);
+  font-size: 8.2px;
+  font-weight: 500;
+  letter-spacing: 0.015em;
+  line-height: 1.3;
+  white-space: nowrap;
+}
+
+.drawer-search {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  flex: none;
+  height: 30px;
+  margin: 7px 10px 0;
+  padding: 0 4px 0 8px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--paper-sunken) 56%, transparent);
+  transition:
+    border-color 140ms ease,
+    box-shadow 140ms ease,
+    background-color 140ms ease;
+}
+
+.drawer-search:focus-within {
+  border-color: color-mix(in srgb, var(--accent) 50%, var(--line));
+  background: var(--paper-raised);
+  box-shadow: 0 0 0 2px var(--accent-soft);
+}
+
+.drawer-search > svg {
+  flex: none;
+  color: var(--faint);
+}
+
+.drawer-search input {
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+  border: 0;
+  outline: none;
+  background: transparent;
+  color: var(--ink);
+  font-size: 10.6px;
+}
+
+.drawer-search input::placeholder {
+  color: var(--faint);
+}
+
+.drawer-search-clear {
+  display: grid;
+  place-items: center;
+  width: 19px;
+  height: 19px;
+  flex: none;
+  border-radius: 5px;
+  color: var(--faint);
+}
+
+.drawer-search-clear:hover {
+  color: var(--ink);
+  background: color-mix(in srgb, var(--ink) 7%, transparent);
+}
+
+.drawer-list {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 5px 6px 10px;
+}
+
+.drawer-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 34px 20px;
+  text-align: center;
+  font-size: 10.4px;
+  line-height: 1.5;
+  color: var(--faint);
+}
+
+.drawer-group {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.drawer-group + .drawer-group {
+  margin-top: 7px;
+}
+
+.drawer-group-label {
+  margin: 5px 6px 2px;
+  font-size: 8.3px;
+  font-weight: 630;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--faint);
+}
+
+.drawer-row {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 1px;
+  min-height: 36px;
+  padding: 1px 2px;
+  border-radius: 8px;
+  transition: background-color 130ms ease;
+}
+
+.drawer-row:hover {
+  background: color-mix(in srgb, var(--ink) 4.5%, transparent);
+}
+
+.drawer-row--active {
+  background: var(--accent-soft);
+}
+
+.drawer-row--active:hover {
+  background: color-mix(in srgb, var(--accent) 16%, transparent);
+}
+
+.drawer-main {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  flex: 1;
+  min-width: 0;
+  padding: 5px 6px;
+  border-radius: 6px;
+  text-align: left;
+}
+
+.drawer-title {
+  font-size: 10.8px;
+  font-weight: 560;
+  line-height: 1.32;
+  color: var(--ink-soft);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.drawer-row--active .drawer-title {
+  color: var(--ink);
+  font-weight: 630;
+}
+
+.drawer-meta {
+  font-size: 8.6px;
+  line-height: 1.3;
+  color: var(--faint);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-variant-numeric: tabular-nums;
+}
+
+.drawer-row-actions {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  flex: none;
+  padding-right: 1px;
+  opacity: 0;
+  transition: opacity 130ms ease;
+}
+
+.drawer-row:hover .drawer-row-actions,
+.drawer-row:focus-within .drawer-row-actions,
+.drawer-row--active .drawer-row-actions {
+  opacity: 1;
+}
+
+.drawer-action {
+  display: grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  flex: none;
+  border-radius: 5px;
+  color: var(--faint);
+  transition:
+    color 120ms ease,
+    background-color 120ms ease;
+}
+
+.drawer-action:hover:not(:disabled) {
+  color: var(--ink);
+  background: color-mix(in srgb, var(--ink) 8%, transparent);
+}
+
+.drawer-action--danger:hover:not(:disabled) {
+  color: var(--danger);
+  background: var(--danger-soft);
+}
+
+.drawer-confirm {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  flex: none;
+  padding: 1px;
+  border: 1px solid color-mix(in srgb, var(--danger) 30%, transparent);
+  border-radius: 6px;
+  background: var(--danger-soft);
+}
+
+.drawer-confirm .drawer-action {
+  color: var(--danger);
+}
+
+.drawer-confirm .drawer-action:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--danger) 16%, transparent);
+}
+
+.drawer-rename {
+  flex: 1;
+  min-width: 0;
+  padding: 2px 3px;
+}
+
+.drawer-rename input {
+  width: 100%;
+  height: 26px;
+  padding: 0 6px;
+  border: 1px solid color-mix(in srgb, var(--accent) 62%, transparent);
+  border-radius: 6px;
+  outline: none;
+  background: var(--paper-raised);
+  color: var(--ink);
+  font-size: 10.5px;
+  font-weight: 550;
+  box-shadow: 0 0 0 2px var(--accent-soft);
+}
+
+.drawer-foot {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 7px 9px 8px;
+  border-top: 1px solid color-mix(in srgb, var(--line) 72%, transparent);
+  background: color-mix(in srgb, var(--paper-sunken) 42%, transparent);
+}
+
+.drawer-foot-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  flex: 1;
+  height: 27px;
+  border-radius: 7px;
+  color: var(--muted);
+  font-size: 9.6px;
+  font-weight: 540;
+  transition:
+    color 130ms ease,
+    background-color 130ms ease;
+}
+
+.drawer-foot-button svg {
+  flex: none;
+  color: var(--faint);
+}
+
+.drawer-foot-button:hover {
+  color: var(--ink);
+  background: color-mix(in srgb, var(--ink) 5%, transparent);
+}
+
+.drawer-foot-button:hover svg {
+  color: var(--accent);
+}

@@ -1,0 +1,7 @@
+{
+  "$schema": "../gen/schemas/desktop-schema.json",
+  "identifier": "avatar",
+  "description": "Avatar window: events only.",
+  "windows": ["avatar"],
+  "permissions": ["core:event:default"]
+}

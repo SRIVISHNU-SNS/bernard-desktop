@@ -1,0 +1,11 @@
+node_modules/
+dist/
+target/
+src-tauri/target/
+sidecar/llama-vulkan/
+sidecar/llama-cpu/
+models/
+*.log
+.env
+.env.local
+.DS_Store
