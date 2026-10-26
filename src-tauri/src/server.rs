@@ -59,7 +59,10 @@ impl ServerManager {
     pub fn new(app: AppHandle) -> Self {
         let client = reqwest::Client::builder()
             .connect_timeout(Duration::from_secs(5))
-            .timeout(Duration::from_secs(600))
+            // No total request timeout: prefill on a large model can run for
+            // minutes before the first token. `read_timeout` only fires when the
+            // server stops sending data entirely.
+            .read_timeout(Duration::from_secs(300))
             .build()
             .unwrap_or_default();
         Self {
@@ -318,7 +321,9 @@ impl ServerManager {
         #[cfg(windows)]
         {
             if let Some(raw) = child.raw_handle() {
-                self.attach_to_job(raw).await;
+                // `RawHandle` is a raw pointer and therefore not `Send`; pass it
+                // as an integer so this future stays `Send` for `spawn`.
+                self.attach_to_job(raw as usize).await;
             }
         }
 
@@ -458,7 +463,7 @@ impl ServerManager {
     }
 
     #[cfg(windows)]
-    async fn attach_to_job(&self, raw: std::os::windows::io::RawHandle) {
+    async fn attach_to_job(&self, raw: usize) {
         use windows::Win32::Foundation::HANDLE;
         use windows::Win32::System::JobObjects::{
             AssignProcessToJobObject, CreateJobObjectW, JobObjectExtendedLimitInformation,
