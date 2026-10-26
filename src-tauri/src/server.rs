@@ -307,8 +307,8 @@ impl ServerManager {
         }
         #[cfg(windows)]
         {
-            use std::os::windows::process::CommandExt;
-            command.as_std_mut().creation_flags(0x0800_0000);
+            // CREATE_NO_WINDOW: the server is a background child of a GUI app.
+            command.creation_flags(0x0800_0000);
         }
 
         let mut child = command
@@ -316,8 +316,9 @@ impl ServerManager {
             .map_err(|e| format!("Could not launch {}: {e}", binary.display()))?;
 
         #[cfg(windows)]
-        if let Some(raw) = child.raw_handle() {
-            self.attach_to_job(raw).await;
+        {
+            use std::os::windows::io::AsRawHandle;
+            self.attach_to_job(child.as_raw_handle()).await;
         }
 
         if let Some(stdout) = child.stdout.take() {

@@ -460,12 +460,15 @@ async fn launch_completion(
             let _ = state.db.record_performance(
                 "response_total",
                 total_ms,
-                Some(&format!(
-                    "{} prompt / {} completion / {} cached",
-                    outcome.timing.prompt_tokens.unwrap_or(0),
-                    outcome.timing.completion_tokens.unwrap_or(0),
-                    outcome.timing.cache_tokens.unwrap_or(0)
-                )),
+                Some(
+                    format!(
+                        "{} prompt / {} completion / {} cached",
+                        outcome.timing.prompt_tokens.unwrap_or(0),
+                        outcome.timing.completion_tokens.unwrap_or(0),
+                        outcome.timing.cache_tokens.unwrap_or(0)
+                    )
+                    .as_str(),
+                ),
             );
 
             if outcome.cancelled {
@@ -800,11 +803,10 @@ pub async fn begin_snip(app: &AppHandle) -> Result<(), String> {
     }
 
     let elapsed = started.elapsed().as_secs_f64() * 1000.0;
-    let _ = state.db.record_performance(
-        "hotkey_to_overlay",
-        elapsed,
-        Some(&format!("{count} display(s)")),
-    );
+    let detail = format!("{count} display(s)");
+    let _ = state
+        .db
+        .record_performance("hotkey_to_overlay", elapsed, Some(detail.as_str()));
     let _ = app.emit("performance://sample", json!({ "kind": "hotkey_to_overlay", "valueMs": elapsed }));
     Ok(())
 }

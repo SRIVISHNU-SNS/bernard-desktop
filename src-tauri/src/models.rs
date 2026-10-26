@@ -111,8 +111,7 @@ If an image is supplied, inspect it carefully and do not invent details that are
         .to_string()
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
-#[serde(rename_all = "camelCase")]
+#[derive(Debug, Clone)]
 pub struct ModelPreset {
     pub id: &'static str,
     pub label: &'static str,

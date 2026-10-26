@@ -19,7 +19,8 @@ impl Db {
         }
         let conn = Connection::open(path)
             .map_err(|e| format!("Could not open Bernard's database: {e}"))?;
-        conn.pragma_update(None, "journal_mode", "WAL")
+        let _mode: String = conn
+            .query_row("PRAGMA journal_mode = WAL", [], |row| row.get(0))
             .map_err(|e| format!("Could not enable SQLite WAL mode: {e}"))?;
         conn.pragma_update(None, "foreign_keys", "ON")
             .map_err(|e| format!("Could not enable SQLite foreign keys: {e}"))?;

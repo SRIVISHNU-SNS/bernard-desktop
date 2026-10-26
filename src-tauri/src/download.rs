@@ -255,9 +255,11 @@ async fn download_once(
         .map(|meta| meta.len())
         .unwrap_or(0)
         .min(total);
+    // No total request timeout: model files take many minutes on slow links. The
+    // read timeout only fires when the host stops sending data mid-transfer.
     let client = reqwest::Client::builder()
         .connect_timeout(Duration::from_secs(30))
-        .timeout(Duration::from_secs(120))
+        .read_timeout(Duration::from_secs(90))
         .build()
         .map_err(|e| format!("Could not create the download client: {e}"))?;
     let mut request = client.get(url);
