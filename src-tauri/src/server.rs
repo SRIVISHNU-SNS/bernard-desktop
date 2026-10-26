@@ -19,7 +19,7 @@ use tokio_util::sync::CancellationToken;
 const MAX_LOG_LINES: usize = 240;
 const HEALTH_TIMEOUT: Duration = Duration::from_secs(300);
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Default)]
 pub struct ChunkTiming {
     pub ttft_ms: Option<f64>,
     pub prompt_tokens: Option<i64>,
@@ -517,12 +517,13 @@ impl ServerManager {
                     cancelled: true,
                 });
             }
-            res = self
-                .client
-                .post(format!("{base}/v1/chat/completions"))
-                .json(&body)
-                .send()
-                .await => res
+            res = async {
+                self.client
+                    .post(format!("{base}/v1/chat/completions"))
+                    .json(&body)
+                    .send()
+                    .await
+            } => res
         }
         .map_err(|e| friendly_network_error(&e))?;
         let status = response.status();
