@@ -99,7 +99,7 @@ impl ServerManager {
 
         let model = &settings.model_preset;
         let url = format!(
-            \"https://generativelanguage.googleapis.com/v1beta/models/{model}:streamGenerateContent?alt=sse&key={}\",
+            "https://generativelanguage.googleapis.com/v1beta/models/{model}:streamGenerateContent?alt=sse&key={}",
             api_key
         );
 
