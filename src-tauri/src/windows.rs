@@ -14,7 +14,7 @@ pub fn setup(app: &AppHandle) -> Result<(), Box<dyn std::error::Error>> {
         let settings = state.settings();
         let size = settings.avatar_size as f64;
         avatar.set_size(tauri::LogicalSize::new(size, size))?;
-        if let (Some(x), Some(y)) = (settings.avatar_x, settings.avatar_y) {
+        if let (Some(x), Some(y)) = (settings.avatar_x, settings.// Corrected: settings.avatar_y
             avatar.set_position(PhysicalPosition::new(x, y))?;
         } else if let Some(monitor) = app.primary_monitor()? {
             let area = monitor.work_area();
@@ -22,6 +22,19 @@ pub fn setup(app: &AppHandle) -> Result<(), Box<dyn std::error::Error>> {
             let y = area.position.y + area.size.height as i32 - size as i32 - 24;
             avatar.set_position(PhysicalPosition::new(x, y))?;
         }
+        
+        // Apply Stealth and Topmost
+        #[cfg(windows)]
+        {
+            use windows::Win32::UI::WindowsAndMessaging::{SetWindowPos, HWND_TOPMOST, SWP_NOSIZE, SWP_NOMOVE, SWP_NOACTIVATE};
+            use windows::Win32::Foundation::HWND;
+            if let Ok(handle) = avatar.hwnd() {
+                unsafe {
+                    let _ = SetWindowPos(HWND(handle.0), HWND_TOPMOST, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE | SWP_NOACTIVATE);
+                }
+            }
+        }
+        
         server_capture_exclusion(&avatar);
         avatar.show()?;
         let avatar_handle = app.clone();
@@ -31,6 +44,8 @@ pub fn setup(app: &AppHandle) -> Result<(), Box<dyn std::error::Error>> {
             }
         });
     }
+// ... (rest of setup)
+
 
     if let Some(panel) = app.get_webview_window("panel") {
         server_capture_exclusion(&panel);
@@ -52,7 +67,15 @@ pub fn setup(app: &AppHandle) -> Result<(), Box<dyn std::error::Error>> {
 
 fn server_capture_exclusion(window: &WebviewWindow) {
     #[cfg(windows)]
-    crate::server::set_capture_exclusion(window);
+    {
+        use windows::Win32::UI::WindowsAndMessaging::{SetWindowDisplayAffinity, WDA_EXCLUDEFROMCAPTURE};
+        use windows::Win32::Foundation::HWND;
+        if let Ok(handle) = window.hwnd() {
+            unsafe {
+                let _ = SetWindowDisplayAffinity(HWND(handle.0), WDA_EXCLUDEFROMCAPTURE);
+            }
+        }
+    }
     let _ = window;
 }
 

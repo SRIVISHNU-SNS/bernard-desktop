@@ -37,8 +37,7 @@ impl Default for BackendPreference {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct AppSettings {
-    pub model_path: String,
-    pub mmproj_path: String,
+    pub api_key: String,
     pub model_preset: String,
     pub hotkey: String,
     pub theme: Theme,
@@ -57,18 +56,9 @@ pub struct AppSettings {
 
 impl AppSettings {
     pub fn new(data_dir: &Path) -> Self {
-        let preset = preset("e4b");
-        let models = data_dir.join("models");
         Self {
-            model_path: models
-                .join(preset.model_file)
-                .to_string_lossy()
-                .to_string(),
-            mmproj_path: models
-                .join(preset.mmproj_file)
-                .to_string_lossy()
-                .to_string(),
-            model_preset: preset.id.to_string(),
+            api_key: "".to_string(),
+            model_preset: "gemini-1.5-flash".to_string(),
             hotkey: "Alt+B".to_string(),
             theme: Theme::System,
             avatar_size: 72,
