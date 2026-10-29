@@ -10,7 +10,14 @@ pub fn register(app: &AppHandle) -> Result<(), String> {
         .try_state::<AppState>()
         .map(|state| state.settings().hotkey)
         .unwrap_or_else(|| "Alt+B".to_string());
-    register_hotkey(app, &hotkey)
+    
+    // Register the main snip hotkey
+    register_hotkey(app, &hotkey)?;
+    
+    // Register the 'A' key for toggling visibility
+    register_hotkey(app, "A")?;
+    
+    Ok(())
 }
 
 fn register_hotkey(app: &AppHandle, hotkey: &str) -> Result<(), String> {
@@ -45,7 +52,7 @@ pub fn validate(hotkey: &str) -> Result<(), String> {
         .map_err(|e| format!("That is not a valid hotkey: {e}"))
 }
 
-pub fn handle_shortcut(app: &AppHandle, _shortcut: &Shortcut, event: ShortcutEvent) {
+pub fn handle_shortcut(app: &AppHandle, shortcut: &Shortcut, event: ShortcutEvent) {
     if event.state != ShortcutState::Pressed {
         return;
     }
@@ -55,6 +62,19 @@ pub fn handle_shortcut(app: &AppHandle, _shortcut: &Shortcut, event: ShortcutEve
     if state.snip_active.load(Ordering::SeqCst) {
         return;
     }
+    
+    // Toggle avatar visibility when 'A' is pressed
+    if shortcut.to_string() == "A" {
+        if let Some(avatar) = app.get_webview_window("avatar") {
+            if avatar.is_visible().unwrap_or(false) {
+                let _ = avatar.hide();
+            } else {
+                let _ = avatar.show();
+            }
+        }
+        return;
+    }
+
     let handle = app.clone();
     tauri::async_runtime::spawn(async move {
         crate::commands::begin_snip(&handle).await;
