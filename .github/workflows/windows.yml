@@ -43,7 +43,7 @@ jobs:
         run: npm run build
 
       - name: Cargo check
-        run: cargo check --manifest-path src-tauri/Cargo.toml --locked
+        run: cargo check --manifest-path src-tauri/Cargo.toml
 
       - name: Build NSIS installer
         run: npm run app:build
